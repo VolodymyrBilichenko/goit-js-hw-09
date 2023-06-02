@@ -10,6 +10,7 @@ const refs = {
     hoursVal: document.querySelector('[data-hours]'),
     minsVal: document.querySelector('[data-minutes]'),
     secVal: document.querySelector('[data-seconds]'),
+    inputDate: document.querySelector('#datetime-picker')
 };
 
 const options = {
@@ -17,10 +18,15 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    console.log(selectedDates[0]);
+    onClose(selectedDates) {
+        const todayDate = new Date();
+        const choseDate = selectedDates[0];
+        // if (choseDate) {
+            
+        // }
     },
 };
+flatpickr(refs.inputDate, options);
 
 const timer = {
     intervalId: null,
@@ -29,12 +35,12 @@ const timer = {
         if (this.isActive) { // коли запускаємо таймер і він вже активний, 
             return; // просто виходимо з коду
         }
-        const startTime = Date.now(); // наш стартовий час
+        const startTime = flatpickr.parseDate(refs.inputDate.value, "Y-m-d H:i:S"); // наш стартовий час. підключаємо як options
         this.isActive = true; // робимо його яктивним (якщо він був не активний) і запускаємо інтервал
         
         this.intervalId = setInterval(() => { // запускаємо інтервал, і при кожному визову фун-ії відкладенної 
             const currentTime = Date.now(); // отримуємо поточний час
-            const deltaTime = currentTime - startTime; // різницю між поточним і стартовим (кількість мс)
+            const deltaTime = startTime - currentTime; // різницю між поточним і стартовим (кількість мс)
             const time = convertMs(deltaTime); // визиваємо convertMS(рахує скільки влазить мілісекунд в дні, години, часи ...) і повертає в {days ...}
             
             updateClockface(time);
@@ -54,17 +60,17 @@ const timer = {
 //         if (this.isActive) { // коли запускаємо таймер і він вже активний, 
 //             return; // просто виходимо з коду
 //         }
-//         const startTime = Date.now(); // наш стартовий час
+//         const startTime = flatpickr.parseDate(refs.inputDate.value, "Y-m-d H:i:S"); // наш стартовий час. підключаємо як options
 //         this.isActive = true; // робимо його яктивним (якщо він був не активний) і запускаємо інтервал
         
 //         this.intervalId = setInterval(() => { // запускаємо інтервал, і при кожному визову фун-ії відкладенної 
 //             const currentTime = Date.now(); // отримуємо поточний час
-//             const deltaTime = currentTime - startTime; // різницю між поточним і стартовим (кількість мс)
+//             const deltaTime = startTime - currentTime; // різницю між поточним і стартовим (кількість мс)
 //             const time = convertMs(deltaTime); // визиваємо convertMS(рахує скільки влазить мілісекунд в дні, години, часи ...) і повертає в {days ...}
             
-//             this.onTick(time) // визиваємо фун-ю куди передаємо час
+//             this.onTick(time); // визиваємо фун-ю куди передаємо час
 //         }, 1000);
-//     };
+//     }
 // };
 
 // const timer = new Timer({
