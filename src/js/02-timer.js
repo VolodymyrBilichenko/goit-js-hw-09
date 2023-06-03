@@ -2,6 +2,8 @@
 import flatpickr from "flatpickr";
 // Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
+// Додатковий імпорт спливаючих вікон
+import Notiflix from 'notiflix';
 
 const refs = {
     startBtn: document.querySelector('[data-start]'),
@@ -13,6 +15,11 @@ const refs = {
     inputDate: document.querySelector('#datetime-picker')
 };
 
+refs.startBtn.addEventListener('click', () => {
+    timer.start();
+});
+refs.startBtn.disabled = true; // кнопка не активна з початку
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -21,9 +28,13 @@ const options = {
     onClose(selectedDates) {
         const todayDate = new Date();
         const choseDate = selectedDates[0];
-        // if (choseDate) {
+        if (choseDate < todayDate) { // перевірка на від'ємний час 
+            Notiflix.Notify.failure("Please choose a date in the future");
+            refs.startBtn.disabled = true;
+        } else {
+            refs.startBtn.disabled = false;
+        };
             
-        // }
     },
 };
 flatpickr(refs.inputDate, options);
@@ -37,13 +48,20 @@ const timer = {
         }
         const startTime = flatpickr.parseDate(refs.inputDate.value, "Y-m-d H:i:S"); // наш стартовий час. підключаємо як options
         this.isActive = true; // робимо його яктивним (якщо він був не активний) і запускаємо інтервал
-        
+        refs.startBtn.disabled = true;
+
         this.intervalId = setInterval(() => { // запускаємо інтервал, і при кожному визову фун-ії відкладенної 
             const currentTime = Date.now(); // отримуємо поточний час
             const deltaTime = startTime - currentTime; // різницю між поточним і стартовим (кількість мс)
             const time = convertMs(deltaTime); // визиваємо convertMS(рахує скільки влазить мілісекунд в дні, години, часи ...) і повертає в {days ...}
             
             updateClockface(time);
+
+            if (deltaTime < 0) {
+                clearInterval(this.intervalId); // чистимо інтервал 
+                updateClockface(convertMs(0)); // скидуємо значення на 0
+                Notiflix.Notify.success("SELLOUT");
+            }
         }, 1000);
     },
 };
@@ -62,13 +80,22 @@ const timer = {
 //         }
 //         const startTime = flatpickr.parseDate(refs.inputDate.value, "Y-m-d H:i:S"); // наш стартовий час. підключаємо як options
 //         this.isActive = true; // робимо його яктивним (якщо він був не активний) і запускаємо інтервал
-        
+//         refs.startBtn.disabled = true;
+
 //         this.intervalId = setInterval(() => { // запускаємо інтервал, і при кожному визову фун-ії відкладенної 
 //             const currentTime = Date.now(); // отримуємо поточний час
 //             const deltaTime = startTime - currentTime; // різницю між поточним і стартовим (кількість мс)
 //             const time = convertMs(deltaTime); // визиваємо convertMS(рахує скільки влазить мілісекунд в дні, години, часи ...) і повертає в {days ...}
             
-//             this.onTick(time); // визиваємо фун-ю куди передаємо час
+//             updateClockface(time);
+
+//             if (deltaTime <= 0) {
+//                 clearInterval(this.intervalId); // чистимо інтервал 
+//                 updateClockface(convertMs(0)); // скидуємо значення на 0
+//                 Notiflix.Notify.success("SELLOUT");
+//             } else {
+//                 this.onTick(time); // визиваємо фун-ю куди передаємо час
+//             }
 //         }, 1000);
 //     }
 // };
@@ -77,10 +104,6 @@ const timer = {
 //     onTick: updateClockface
 // });
 // ДРУГИЙ СПОСІБ ЗА ДОПОМОГОЮ class
-
-refs.startBtn.addEventListener('click', () => {
-    timer.start();
-});
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
