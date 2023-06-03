@@ -12,8 +12,12 @@ const refs = {
     hoursVal: document.querySelector('[data-hours]'),
     minsVal: document.querySelector('[data-minutes]'),
     secVal: document.querySelector('[data-seconds]'),
-    inputDate: document.querySelector('#datetime-picker')
+    inputDate: document.querySelector('#datetime-picker'),
+    timerStyle: document.querySelector('.timer'),
+    clockFaceStyle: document.querySelector('.field'),
 };
+
+styleTimer(); // виклик стилів на таймер
 
 refs.startBtn.addEventListener('click', () => {
     timer.start();
@@ -135,4 +139,16 @@ function updateClockface({ days, hours, minutes, seconds }) {
     refs.hoursVal.textContent = `${hours}`;
     refs.minsVal.textContent = `${minutes}`;
     refs.secVal.textContent = `${seconds}`;
+};
+
+function styleTimer() {
+    refs.timerStyle.style.display = 'flex';
+    refs.timerStyle.style.gap = '15px';
+
+    // refs.clockFaceStyle.forEach(el => {
+    //     el.style.display = 'flex';
+    //     el.style.flexDirection = 'column';
+    // });
+    // refs.styleTimer.style.display = 'flex';
+    // refs.styleTimer.style.flexDirection = 'column';
 };
