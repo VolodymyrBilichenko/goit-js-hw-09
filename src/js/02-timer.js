@@ -14,7 +14,7 @@ const refs = {
     secVal: document.querySelector('[data-seconds]'),
     inputDate: document.querySelector('#datetime-picker'),
     timerStyle: document.querySelector('.timer'),
-    clockFaceStyle: document.querySelector('.field'),
+    clockFaceStyle: document.querySelectorAll('.field'),
 };
 
 styleTimer(); // виклик стилів на таймер
@@ -145,10 +145,9 @@ function styleTimer() {
     refs.timerStyle.style.display = 'flex';
     refs.timerStyle.style.gap = '15px';
 
-    // refs.clockFaceStyle.forEach(el => {
-    //     el.style.display = 'flex';
-    //     el.style.flexDirection = 'column';
-    // });
-    // refs.styleTimer.style.display = 'flex';
-    // refs.styleTimer.style.flexDirection = 'column';
+    refs.clockFaceStyle.forEach(el => {
+        el.style.display = 'flex';
+        el.style.flexDirection = 'column';
+        el.style.textAlign = 'center';
+    })
 };
