@@ -1,53 +1,50 @@
 import Notiflix from 'notiflix';
 
+
 const refs = {
-  formEl: document.querySelector('.form'),
-  inputDelayEl: document.querySelector('input[name="delay"]'),
-  inputStepEl: document.querySelector('input[name="step"]'),
-  inputAmountEl: document.querySelector('input[name="amount"]'),
-  btnSumbmitEl: document.querySelector('button[type="submit"]')
-};
-
-refs.btnSumbmitEl.addEventListener('click', onFormSubmit);
+  form: document.querySelector('.form'),
+  delayInp: document.querySelector('input[name = "delay"]'),
+  stepInp: document.querySelector('input[name = "step"]'),
+  amountInp: document.querySelector('input[name = "amount"]'),
+  sybmBtn: document.querySelector('button[type="submit"]'),
+}
 
 
-function createPromise(position, delay) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const shouldResolve = Math.random() > 0.3;
-      if (shouldResolve) {
-        resolve({ position, delay });
-      } else {
-        reject({ position, delay });
-      }
-    }, delay)
-  });
-};
+refs.sybmBtn.addEventListener('click', onSubmit);
 
 
-function onFormSubmit(event){
-  event.preventDefault();
+function onSubmit(evt) {
+  evt.preventDefault();
 
-  let delay = Number(refs.inputDelayEl.value);
-  const step = Number(refs.inputStepEl.value);
-  const amount = Number(refs.inputAmountEl.value);
-  
-  for(let i = 0; i < amount; i += 1){
-    let position = i + 1; 
-
-    createPromise(position, delay)
+  let delay = Number(refs.delayInp.value);
+  const step = Number(refs.stepInp.value);
+  const amount = Number(refs.amountInp.value);
+  for (let i = 0; i < amount; i += 1) {
+    let position = i + 1;
+    
+    createPromise(position, delay) // визиваю 
       .then(({ position, delay }) => {
         Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
       })
       .catch(({ position, delay }) => {
-        Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+        Notiflix.Notify.warning(`❌ Rejected promise ${position} in ${delay}ms`);
       });
-      delay += step
-  };
-  formReset();
-};
+    delay += step
+  }
+
+  refs.form.reset(); // ресет форми після закінчення виконання 
+}
 
 
-function formReset(){
-  refs.formEl.reset();
-};
+function createPromise(position, delay) { // генерує проміси 
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const shouldResolve = Math.random() > 0.3;
+        if (shouldResolve) {
+          resolve({position, delay});
+        } else {
+          reject({position, delay});
+        }
+    }, delay);
+  });
+}
