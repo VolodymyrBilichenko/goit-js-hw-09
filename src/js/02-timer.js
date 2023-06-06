@@ -7,7 +7,6 @@ import Notiflix from 'notiflix';
 
 const refs = {
     startBtn: document.querySelector('[data-start]'),
-    dateInp: document.querySelector('#datetime-picker'),
     daysVal: document.querySelector('[data-days]'),
     hoursVal: document.querySelector('[data-hours]'),
     minsVal: document.querySelector('[data-minutes]'),
